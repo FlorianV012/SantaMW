@@ -1,12 +1,28 @@
-const express = require("express");
-const router = express.Router();
+function categoriesRoutes(app, db) {
+  // Index categories
+  app.get("/categories", async (req, res) => {
+    const responseDB = await db.query(`SELECT * FROM categories`);
+    res.json({ status: 200, responseDB });
+  });
 
-const categoriesCtrl = require("../controllers/categories");
+  // Show category
+  app.get("/categories/:id", async (req, res) => {
+    const id = req.params.id;
+    const responseDB = await db.query(`SELECT * FROM categories WHERE id = ?`, [
+      id,
+    ]);
+    res.json({ status: 200, responseDB });
+  });
 
-router.get("/", categoriesCtrl.indexCategories);
-// router.get("/:id", categoriesCtrl.getOneCategory);
-// router.post("/", categoriesCtrl.createCategory);
-// router.put("/:id", categoriesCtrl.modifyCategory);
-// router.delete("/:id", categoriesCtrl.deleteCategory);
+  // Create category
+  app.post("/categories", async (req, res) => {
+    const name = req.body.name;
+    const responseDB = await db.query(
+      "INSERT INTO categories (name) VALUES (?)",
+      [name]
+    );
+    res.json({ status: 200, responseDB });
+  });
+}
 
-module.exports = router;
+module.exports = categoriesRoutes;
