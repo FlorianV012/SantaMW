@@ -16,12 +16,16 @@ function categoriesRoutes(app, db) {
 
   // Create category
   app.post("/categories", async (req, res) => {
-    const name = req.body.name;
-    const responseDB = await db.query(
-      "INSERT INTO categories (name) VALUES (?)",
-      [name]
-    );
-    res.json({ status: 200, responseDB });
+    if (req.body.name) {
+      const name = req.body.name;
+      const responseDB = await db.query(
+        "INSERT INTO categories (name) VALUES (?)",
+        [name]
+      );
+      res.json({ status: 200, responseDB });
+    } else {
+      res.sendStatus(422);
+    }
   });
 
   // Update category
